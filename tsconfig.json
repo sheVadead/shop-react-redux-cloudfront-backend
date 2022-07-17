@@ -9,7 +9,7 @@
     "removeComments": true,
     "esModuleInterop": true,
     "sourceMap": true,
-    "outDir": "lib"
+    "outDir": "lib",
   },
   "include": ["src/**/*.ts"],
   "exclude": [

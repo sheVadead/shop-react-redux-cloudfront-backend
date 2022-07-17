@@ -1,12 +1,10 @@
 import { formatJSONResponse } from "../../../libs/responseModify";
 import { productList } from "../../../mocks/productsList";
 import { middyfy } from "../../../libs/lambda";
-import { ValidatedEventAPIGatewayProxyEvent } from "../../../types";
-import schema from "./schema";
+// import { ValidatedEventAPIGatewayProxyEvent } from "../../../types";
+// import schema from "./schema";
 
-const getProductById: ValidatedEventAPIGatewayProxyEvent<
-  typeof schema
-> = async (event) => {
+export const getProductById = async (event) => {
   try {
     const { id } = event.pathParameters;
 
