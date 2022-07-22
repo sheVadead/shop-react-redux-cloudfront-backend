@@ -1,13 +1,13 @@
-import schema from "./schema";
+import { schema } from "./schema";
 import { handlerPath } from "@libs/handler-resolver";
 
 export default {
-  handler: `${handlerPath(__dirname)}/getProductById.handler`,
+  handler: `${handlerPath(__dirname)}/createProduct.handler`,
   events: [
     {
       http: {
-        method: "get",
-        path: "/products/{id}",
+        method: "post",
+        path: "/products",
         request: {
           schemas: {
             "application/json": schema,

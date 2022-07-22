@@ -1,23 +1,27 @@
 import { formatJSONResponse } from "../../../libs/responseModify";
-import { productList } from "../../../mocks/productsList";
 import { middyfy } from "../../../libs/lambda";
-// import { ValidatedEventAPIGatewayProxyEvent } from "../../../types";
-// import schema from "./schema";
+import { ProductsService } from "../../../services/products.service";
+import { IProduct, IStock } from "../../../models";
 
 export const getProductById = async (event) => {
+  const productService = new ProductsService()
   try {
-    const { id } = event.pathParameters;
+    const { name } = event.pathParameters;
 
-    if (isNaN(+id)) {
-      return formatJSONResponse("Invalid argument type", 400);
+    if (!name || typeof name !== "string") {
+      return formatJSONResponse("Bad request", 400);
     }
-    const product =
-      productList.find((product) => product.id === +id) ||
-      "There is no product with such id";
 
-    return formatJSONResponse(product);
+    const product: IProduct & IStock = await productService.findProductById(
+      name
+    );
+
+    return formatJSONResponse(
+      product || { message: "There is no product with such id", statusCode: 400 }
+    );
   } catch (err) {
-    return formatJSONResponse(err, 400);
+    await productService.closeConnection();
+    return formatJSONResponse(err, 500);
   }
 };
 

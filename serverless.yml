@@ -10,6 +10,11 @@ provider:
   environment:
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
+      PGUSER:
+      PGHOST:
+      PGPASSWORD:
+      PGDATABASE:
+      PGPORT:
 
 plugins:
   - serverless-plugin-typescript
@@ -25,5 +30,11 @@ functions:
     handler: ./src/functions/products/getProductById/getProductById.handler
     events:
       - http: 
-          path: products/{id}
+          path: /products/{name}
           method: get
+  createProduct:
+    handler: ./src/functions/products/createProduct/createProduct.handler
+    events:
+      - http: 
+          path: /products
+          method: post

@@ -42,7 +42,7 @@ export const productList = [
     {
       "id": 6,
       "count": 8,
-      "description": " world's original soft drink that offers a range of delicately-balanced creations with ingredients selected with care",
+      "description": "World's original soft drink that offers a range of delicately-balanced creations with ingredients selected with care",
       "photoId": "photo-1581006852262-e4307cf6283a",
       "price": 15,
       "title": "Schweppes"
