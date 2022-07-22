@@ -13,11 +13,11 @@ export const getProductById = async (event) => {
     }
     const product =
       productList.find((product) => product.id === +id) ||
-      "There is no product with such id";
+      {message: "There is no product with such id", statusCode: 404};
 
     return formatJSONResponse(product);
   } catch (err) {
-    return formatJSONResponse(err, 400);
+    return formatJSONResponse(err, 500);
   }
 };
 
