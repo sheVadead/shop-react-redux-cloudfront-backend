@@ -1,0 +1,29 @@
+service: node-in-aws-backend-sheva
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  apiGateway: 
+      shouldStartNameWithService: true
+  profile: sheva_admin
+  region: 'eu-central-1'
+  environment:
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+      NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
+
+plugins:
+  - serverless-plugin-typescript
+
+functions:
+  getProductsList:
+    handler: ./src/functions/products/getProductsList/getProductsList.handler
+    events:
+      - http: 
+          path: /products
+          method: get
+  getProductById:
+    handler: ./src/functions/products/getProductById/getProductById.handler
+    events:
+      - http: 
+          path: products/{id}
+          method: get
