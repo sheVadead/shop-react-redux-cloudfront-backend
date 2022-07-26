@@ -5,12 +5,13 @@ import { ProductsService } from "../../../services/products.service";
 import { schema } from "./schema";
 
 export const createProduct = async (event) => {
-  const productService = new ProductsService()
+  let productService: ProductsService;
   try {
-    const validateBody = schema.validate(event.body);
+    productService = new ProductsService();
 
+    const validateBody = schema.validate(event.body);
+    
     if ("error" in validateBody) {
-      console.log(validateBody.error);
       return formatJSONResponse({
         message: validateBody.error.details[0].message,
         statusCode: 400,

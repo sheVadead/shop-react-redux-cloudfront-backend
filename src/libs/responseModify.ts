@@ -1,7 +1,9 @@
 export const formatJSONResponse = (response: any, statusCode = 200) => {
   if(response.statusCode ) {
     statusCode = response.statusCode;
+    delete response.statusCode
   }
+  
   return {
     statusCode,
     headers: {

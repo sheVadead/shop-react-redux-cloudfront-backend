@@ -2,9 +2,9 @@ import { formatJSONResponse } from "../../../libs/responseModify";
 import { ProductsService } from "../../../services/products.service";
 
 const getProductsList = async () => {
-  const productService = new ProductsService()
+  let productService: ProductsService;
   try {
-    
+    productService = new ProductsService();
     const products = await productService.getProductsAndStock();
     return formatJSONResponse(products || []);
   } catch (err) {
