@@ -1,7 +1,7 @@
 import { Client } from "pg";
 import { IProduct, IStock } from "../models";
 import setupDbQuery from "./setubDB";
-import { config } from "../../productServiceConfig";
+import { config } from "../productServiceConfig";
 export class ProductsService {
   connection: Client;
 
@@ -43,7 +43,7 @@ export class ProductsService {
   }
 
   async getProductsAndStock() {
-    this.connectoToTheDb();
+    await this.connectoToTheDb();
     const joinedProductsAndStocks: (IProduct & IStock)[] = (
       await this.connection
         .query(`SELECT p.id, p.photo_id, p.title, p.description, p.price, s."count"

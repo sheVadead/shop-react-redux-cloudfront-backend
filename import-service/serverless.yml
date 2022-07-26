@@ -1,0 +1,43 @@
+service: import-service
+
+provider:
+  name: aws
+  # iam:
+  #   role:
+  #     statements:
+  #       # Allow functions to list all buckets
+  #       - Effect: Allow
+  #         Action: 's3:ListBucket'
+  #         Resource: 
+  #           - 'arn:aws:s3:::sheva-aws-bucket-v2'
+  runtime: nodejs16.x
+  apiGateway: 
+      shouldStartNameWithService: true
+  profile: sheva_admin
+  region: 'eu-central-1'
+  environment:
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+      NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
+
+plugins:
+  - serverless-plugin-typescript
+
+functions:
+  importProductsFile:
+    handler: ./functions/importProductsFile/importProductsFile.handler
+    events:
+      - http: 
+          path: /import
+          method: get
+  # getProductById:
+  #   handler: ./functions/products/getProductById/getProductById.handler
+  #   events:
+  #     - http: 
+  #         path: /products/{productId}
+  #         method: get
+  # createProduct:
+  #   handler: ./src/functions/products/createProduct/createProduct.handler
+  #   events:
+  #     - http: 
+  #         path: /products
+  #         method: post

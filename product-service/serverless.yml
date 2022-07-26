@@ -10,30 +10,30 @@ provider:
   environment:
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
-      PGUSER:
-      PGHOST:
-      PGPASSWORD:
-      PGDATABASE:
-      PGPORT: 
+      PGUSER: postgres
+      PGHOST: shop-data-base.chjzvht2q6wb.eu-central-1.rds.amazonaws.com
+      PGPASSWORD: '123123123'
+      PGDATABASE: postgres
+      PGPORT: 5432
 
 plugins:
   - serverless-plugin-typescript
 
 functions:
   getProductsList:
-    handler: ./src/functions/products/getProductsList/getProductsList.handler
+    handler: ./functions/products/getProductsList/getProductsList.handler
     events:
       - http: 
           path: /products
           method: get
   getProductById:
-    handler: ./src/functions/products/getProductById/getProductById.handler
+    handler: ./functions/products/getProductById/getProductById.handler
     events:
       - http: 
           path: /products/{productId}
           method: get
   createProduct:
-    handler: ./src/functions/products/createProduct/createProduct.handler
+    handler: ./functions/products/createProduct/createProduct.handler
     events:
       - http: 
           path: /products

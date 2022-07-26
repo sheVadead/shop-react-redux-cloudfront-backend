@@ -11,7 +11,7 @@
     "sourceMap": true,
     "outDir": "lib",
   },
-  "include": ["src/**/*.ts"],
+  "include": ["/**/*.ts"],
   "exclude": [
     "node_modules/**/*",
     ".serverless/**/*",
