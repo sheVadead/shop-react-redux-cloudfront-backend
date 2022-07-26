@@ -8,3 +8,4 @@ coverage
 
 # esbuild directories
 .esbuild
+node_modules
