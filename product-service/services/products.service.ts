@@ -93,7 +93,7 @@ export class ProductsService {
       if ('error' in newStock) {
         throw { message: newStock.error, statusCode: 400 };
       }
-      await this.connection.query("END");
+      await this.connection.query("commit");
 
       await this.closeConnection();
 
