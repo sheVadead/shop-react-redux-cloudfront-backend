@@ -1,4 +1,4 @@
-import { handler } from "../../../src/functions/products/getProductsList/getProductsList";
+import { handler } from "../../../functions/products/getProductsList/getProductsList";
 
 describe("Products - getProductsList", () => {
   beforeEach(() => {

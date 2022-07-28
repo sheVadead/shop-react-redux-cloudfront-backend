@@ -1,5 +1,5 @@
-import schema from "./schema";
-import { handlerPath } from "@libs/handler-resolver";
+import { schema } from "./schema";
+import { handlerPath } from "../../../libs/handler-resolver";
 
 export default {
   handler: `${handlerPath(__dirname)}/getProductById.handler`,
@@ -7,7 +7,7 @@ export default {
     {
       http: {
         method: "get",
-        path: "/products/{id}",
+        path: "/products/{productId}",
         request: {
           schemas: {
             "application/json": schema,

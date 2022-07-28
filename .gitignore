@@ -5,7 +5,7 @@ coverage
 .build
 # Serverless directories
 .serverless
-
+.env
 # esbuild directories
 .esbuild
 node_modules

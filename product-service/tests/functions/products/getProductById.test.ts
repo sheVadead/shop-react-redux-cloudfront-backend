@@ -1,4 +1,4 @@
-import { getProductById } from "../../../src/functions/products/getProductById/getProductById";
+import { getProductById } from "../../../functions/products/getProductById/getProductById";
 
 describe("Products - getProductById", () => {
   beforeEach(() => {

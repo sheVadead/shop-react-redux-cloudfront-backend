@@ -1,7 +1,7 @@
 import { Client } from "pg";
 import { IProduct, IStock } from "../models";
 import setupDbQuery from "./setubDB";
-import { config } from "../../productServiceConfig";
+import { config } from "../productServiceConfig";
 export class ProductsService {
   connection: Client;
 
@@ -43,7 +43,7 @@ export class ProductsService {
   }
 
   async getProductsAndStock() {
-    this.connectoToTheDb();
+    await this.connectoToTheDb();
     const joinedProductsAndStocks: (IProduct & IStock)[] = (
       await this.connection
         .query(`SELECT p.id, p.photo_id, p.title, p.description, p.price, s."count"
@@ -57,17 +57,15 @@ export class ProductsService {
     return joinedProductsAndStocks;
   }
 
-  async findProductById(title: string): Promise<IProduct & IStock> {
+  async findProductById(id: string): Promise<IProduct & IStock> {
     await this.connectoToTheDb();
-
-    const newTitle = title.replace(/%20/g, " ");
 
     const product = (
       await this.connection
         .query(`SELECT id, photo_id, title, description, price, "count"
     FROM public.stocks s
     left join products p on p.id = s.product_id
-    WHERE p.title = '${newTitle}'
+    WHERE p.id = '${id}'
     `)
     ).rows[0] as IProduct & IStock;
     await this.closeConnection();
@@ -93,7 +91,7 @@ export class ProductsService {
       if ('error' in newStock) {
         throw { message: newStock.error, statusCode: 400 };
       }
-      await this.connection.query("END");
+      await this.connection.query("commit");
 
       await this.closeConnection();
 
