@@ -1,4 +1,4 @@
-export const productList = [
+ [
     {
       "count": 4,
       "description": "Bright, bubbly and popular, Fanta is the soft drink that intensifies fun",
