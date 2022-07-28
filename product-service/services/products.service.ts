@@ -57,17 +57,15 @@ export class ProductsService {
     return joinedProductsAndStocks;
   }
 
-  async findProductById(title: string): Promise<IProduct & IStock> {
+  async findProductById(id: string): Promise<IProduct & IStock> {
     await this.connectoToTheDb();
-
-    const newTitle = title.replace(/%20/g, " ");
 
     const product = (
       await this.connection
         .query(`SELECT id, photo_id, title, description, price, "count"
     FROM public.stocks s
     left join products p on p.id = s.product_id
-    WHERE p.title = '${newTitle}'
+    WHERE p.id = '${id}'
     `)
     ).rows[0] as IProduct & IStock;
     await this.closeConnection();
