@@ -1,23 +1,18 @@
 import { S3 } from "aws-sdk";
 
-export const copyFile = async (s3Instance: S3, key: string) => {
-  console.log("KEY: ", key);
-
-  console.log("SOURCE: ", encodeURIComponent(`sheva-aws-bucket-v2/${key}`));
-
-  console.log("KEY TO COPY: ", `parsed/${key.split("/")[1]}`);
+export const copyFile = async (s3Instance: S3, key: string, bucketName: string) => {
   
   await s3Instance
     .copyObject({
-      Bucket: `sheva-aws-bucket-v2`,
-      CopySource: encodeURIComponent(`sheva-aws-bucket-v2/${key}`),
+      Bucket: bucketName,
+      CopySource: encodeURIComponent(`${bucketName}/${key}`),
       Key: `parsed/${key.split("/")[1]}`,
     })
     .promise();
 
   await s3Instance
     .deleteObject({
-      Bucket: `sheva-aws-bucket-v2`,
+      Bucket: bucketName,
       Key: key,
     })
     .promise();

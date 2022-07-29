@@ -4,40 +4,42 @@ import csv from "csv-parser";
 import { S3 } from "aws-sdk";
 import { S3Event } from "aws-lambda";
 import { copyFile } from "../../libs/copyFile";
-// import { S3Client, AbortMultipartUploadCommand } from "@aws-sdk/client-s3";
+import { S3Record } from "../../models";
+import { middyfy } from "../../libs/lambda";
 
 const importFileParser = async (event: S3Event) => {
   try {
-    console.log(JSON.stringify(event))
-
-    const params = {
+    const s3Instance = new S3({
       region: "eu-central-1",
-    };
-    const records = event.Records.reduce((recordsSum, record) => {
-      if (!!record.s3.object.size) {
-        recordsSum.push({
-          ...record.s3.object,
-          bucketName: record.s3.bucket.name,
-        });
-      }
-      return recordsSum;
-    }, []);
-    const s3 = new S3(params);
+    });
+
+    const records: S3Record[] = event.Records.reduce(
+      (formattedRecords: S3Record[], record) => {
+        if (!!record.s3.object.size) {
+          formattedRecords.push({
+            key: record.s3.object.key,
+            bucketName: record.s3.bucket.name,
+          });
+        }
+        return formattedRecords;
+      },
+      []
+    );
 
     for await (let record of records) {
       const csvParsingStream = csv().on("data", (data) => console.log(data));
-      console.log('RECORD: ', record)
+      const { key, bucketName } = record;
       await pipeline([
-        s3
+        s3Instance
           .getObject({
-            Bucket: record.bucketName,
-            Key: record.key,
+            Bucket: bucketName,
+            Key: key,
           })
           .createReadStream(),
         csvParsingStream,
       ]);
-      
-      await copyFile(s3, record.key)
+
+      await copyFile(s3Instance, key, bucketName);
     }
 
     return formatJSONResponse(event);
@@ -47,4 +49,4 @@ const importFileParser = async (event: S3Event) => {
   }
 };
 
-export const handler = importFileParser;
+export const handler = middyfy(importFileParser);
