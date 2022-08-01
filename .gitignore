@@ -2,9 +2,10 @@
 node_modules
 jspm_packages
 coverage
+.build
 # Serverless directories
 .serverless
-
+.env
 # esbuild directories
 .esbuild
 node_modules
