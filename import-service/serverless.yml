@@ -1,15 +1,21 @@
 service: import-service
-
+   
 provider:
   name: aws
-  # iam:
-  #   role:
-  #     statements:
-  #       # Allow functions to list all buckets
-  #       - Effect: Allow
-  #         Action: 's3:ListBucket'
-  #         Resource: 
-  #           - 'arn:aws:s3:::sheva-aws-bucket-v2'
+  iam:
+    role:
+      statements:
+        # Allow functions to list all buckets
+        - Effect: Allow
+          Action: 
+            - s3:ListBucket
+          Resource: 
+            - 'arn:aws:s3:::sheva-aws-bucket-v2'
+        - Effect: Allow
+          Action: 
+            - s3:*
+          Resource: 
+            - 'arn:aws:s3:::sheva-aws-bucket-v2/*'
   runtime: nodejs16.x
   apiGateway: 
       shouldStartNameWithService: true
@@ -18,6 +24,14 @@ provider:
   environment:
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
+      BUCKET_NAME: ${self:custom.client.bucketName}
+
+
+custom:
+  client:
+    bucketName: sheva-aws-bucket-v2
+  s3BucketName: ${self:custom.client.bucketName}
+
 
 plugins:
   - serverless-plugin-typescript
@@ -29,15 +43,17 @@ functions:
       - http: 
           path: /import
           method: get
-  # getProductById:
-  #   handler: ./functions/products/getProductById/getProductById.handler
-  #   events:
-  #     - http: 
-  #         path: /products/{productId}
-  #         method: get
-  # createProduct:
-  #   handler: ./src/functions/products/createProduct/createProduct.handler
-  #   events:
-  #     - http: 
-  #         path: /products
-  #         method: post
+          request:
+            parameters:
+              querystrings:
+                name: true
+  importFileParser:
+    handler: ./functions/importFileParser/importFileParser.handler
+    events: 
+      - s3: 
+         bucket: ${self:custom.client.bucketName}
+         event: s3:ObjectCreated:*
+         existing: true
+         rules:
+            - prefix: uploaded/
+            - suffix: .csv
