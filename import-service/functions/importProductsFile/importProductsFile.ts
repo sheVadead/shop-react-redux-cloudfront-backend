@@ -1,12 +1,23 @@
 import { formatJSONResponse } from "../../libs/responseModify";
 import { S3 } from "aws-sdk";
-// import { S3Client, AbortMultipartUploadCommand } from "@aws-sdk/client-s3";
+import { middyfy } from "../../libs/lambda";
+import { schema } from "./schema";
 
-const importProductsFile = async (event) => {
+export const importProductsFile = async (event) => {
   try {
     const params = {
       region: "eu-central-1",
     };
+    const validateQueryParameters = schema.validate(
+      event.queryStringParameters
+    );
+
+    if ("error" in validateQueryParameters) {
+      return formatJSONResponse({
+        message: validateQueryParameters.error.details[0].message,
+        statusCode: 400,
+      });
+    }
     const { name } = event.queryStringParameters;
 
     const client = new S3(params);
@@ -15,14 +26,17 @@ const importProductsFile = async (event) => {
       Bucket: process.env.BUCKET_NAME,
       Key: `uploaded/${name}`,
       Expires: 60,
-      ContentType: 'text/csv'
+      ContentType: "text/csv",
     });
-  
+
     return formatJSONResponse(url);
   } catch (err) {
     console.log(err);
-    return formatJSONResponse(err);
+    return formatJSONResponse({
+      message: 'Internal error',
+      statusCode: 500,
+    });
   }
 };
 
-export const handler = importProductsFile;
+export const handler = middyfy(importProductsFile);
