@@ -16,6 +16,14 @@ provider:
             - s3:*
           Resource: 
             - 'arn:aws:s3:::sheva-aws-bucket-v2/*'
+        - Effect: Allow
+          Action: "sqs:*"
+          Resource: 
+            - 'arn:aws:sqs:eu-central-1:396001883133:catalog-node-queue-sheva'
+        - Effect: Allow
+          Action: "sns:*"
+          Resource: 
+            - 'arn:aws:sns:eu-central-1:396001883133:create-product-topic'
   runtime: nodejs16.x
   apiGateway: 
       shouldStartNameWithService: true
@@ -27,6 +35,7 @@ provider:
       BUCKET_NAME: ${self:custom.client.bucketName}
 
 
+
 custom:
   client:
     bucketName: sheva-aws-bucket-v2
@@ -35,6 +44,7 @@ custom:
 
 plugins:
   - serverless-plugin-typescript
+
 
 functions:
   importProductsFile:

@@ -5,12 +5,15 @@ import inputOutputLogger from "@middy/input-output-logger";
 
 const truthChecker = (obj: any) => {
   const res = {};
-  const keysToLog = ["pathParameters", "body", "queryStringParameters"];
+  const keysToLog = [
+    "pathParameters",
+    "body",
+    "queryStringParameters",
+    "Records",
+  ];
   keysToLog.forEach((key: string) => {
-    console.log(res[key], res)
-    if (obj[key]) {
+    if (obj && obj[key]) {
       res[key] = obj[key];
-
     }
   });
   return res;
@@ -22,8 +25,8 @@ export const middyfy = (handler) => {
     .use(
       inputOutputLogger({
         logger: (event) => {
-          const httpMethod = event.event?.httpMethod;
-          const path = event.event?.path;
+          const httpMethod = event?.event?.httpMethod;
+          const path = event?.event?.path;
           if (!event.response) {
             const params = truthChecker(event.event);
             console.log(

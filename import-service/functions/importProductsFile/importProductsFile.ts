@@ -33,7 +33,7 @@ export const importProductsFile = async (event) => {
   } catch (err) {
     console.log(err);
     return formatJSONResponse({
-      message: 'Internal error',
+      message: "Internal error",
       statusCode: 500,
     });
   }
