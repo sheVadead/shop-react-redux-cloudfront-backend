@@ -95,5 +95,6 @@ resources:
           Ref: SNSTopic
         FilterPolicy:
           count:
-            - '>'
-            - '5'
+            - numeric:
+              - '>'
+              - 5
