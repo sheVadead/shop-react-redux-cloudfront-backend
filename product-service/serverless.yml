@@ -14,10 +14,10 @@ provider:
         - Effect: Allow
           Action: "sns:*"
           Resource: 
-            - 'arn:aws:sns:eu-central-1:396001883133:create-product-topic'
+            - 'arn:aws:sns:eu-central-1:688308942697:create-product-topic'
   apiGateway: 
       shouldStartNameWithService: true
-  profile: sheva_admin
+  profile: dm-admin
   region: 'eu-central-1'
   environment:
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
@@ -60,6 +60,17 @@ functions:
     
 resources:
   Resources:
+    RDSInstance:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBName: Products
+        MasterUsername: ${env:PGUSER}
+        MasterUserPassword: ${env:PGPASSWORD}
+        Engine: postgres
+        EngineVersion: "14.2"
+        DBInstanceClass: db.t3.micro
+        AllocatedStorage: 20
+        StorageType: standard
     SQSQueue:
       Type: AWS::SQS::Queue
       Properties:

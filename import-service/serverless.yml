@@ -10,24 +10,24 @@ provider:
           Action: 
             - s3:ListBucket
           Resource: 
-            - 'arn:aws:s3:::sheva-aws-bucket-v2'
+            - 'arn:aws:s3:::product-aws-bucket-v2'
         - Effect: Allow
           Action: 
             - s3:*
           Resource: 
-            - 'arn:aws:s3:::sheva-aws-bucket-v2/*'
+            - 'arn:aws:s3:::product-aws-bucket-v2/*'
         - Effect: Allow
           Action: "sqs:*"
           Resource: 
-            - 'arn:aws:sqs:eu-central-1:396001883133:catalog-node-queue-sheva'
+            - 'arn:aws:sqs:eu-central-1:688308942697:catalog-node-queue-sheva'
         - Effect: Allow
           Action: "sns:*"
           Resource: 
-            - 'arn:aws:sns:eu-central-1:396001883133:create-product-topic'
+            - 'arn:aws:sns:eu-central-1:688308942697:create-product-topic'
   runtime: nodejs16.x
   apiGateway: 
       shouldStartNameWithService: true
-  profile: sheva_admin
+  profile: dm-admin
   region: 'eu-central-1'
   environment:
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
@@ -38,7 +38,7 @@ provider:
 
 custom:
   client:
-    bucketName: sheva-aws-bucket-v2
+    bucketName: product-aws-bucket-v2
   s3BucketName: ${self:custom.client.bucketName}
 
 

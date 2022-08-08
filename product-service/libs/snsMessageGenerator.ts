@@ -47,10 +47,10 @@ const snsAttributesGenerator = (record: Product) => {
 
   Object.keys(record).forEach((key) => {
     if (record[key]) {
+      console.log('KEY:', record[key])
       MessageAttributes[key] = {
         DataType:
-          (typeof record[key]).charAt(0).toUpperCase() +
-          (typeof record[key]).slice(1),
+        +record[key] ? 'Number' : 'String',
         StringValue: record[key] ? record[key] + "" : null,
       };
     }

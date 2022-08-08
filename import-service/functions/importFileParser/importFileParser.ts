@@ -41,6 +41,7 @@ const sqsMessagesHandler = async (messages: Product[]) => {
       MessageBody: JSON.stringify(message),
     };
   });
+  console.log(Entries)
   const { QueueUrl } = await sqs
     .getQueueUrl({ QueueName: queueName })
     .promise();
