@@ -1,23 +1,33 @@
-service: node-in-aws-backend-sheva
+service: node-in-aws-backend-sheva	
+useDotenv: true
 
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dotenv-plugin
+  
 provider:
   name: aws
   runtime: nodejs16.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: "sns:*"
+          Resource: 
+            - 'arn:aws:sns:eu-central-1:688308942697:create-product-topic'
   apiGateway: 
       shouldStartNameWithService: true
-  profile: sheva_admin
+  profile: dm-admin
   region: 'eu-central-1'
   environment:
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
-      PG_HOST: ${env:PG_HOST}
-      PG_PORT: ${env:PG_PORT}
-      PG_DATABASE: ${env:PG_DATABASE}
-      PG_USERNAME: ${env:PG_USERNAME}
-      PG_PASSWORD: ${env:PG_PASSWORD}
+      SQS_URL:
+        Ref: SQSQueue
+      SNS_URL:
+        Ref: SNSTopic
 
-plugins:
-  - serverless-plugin-typescript
+
 
 functions:
   getProductsList:
@@ -38,3 +48,54 @@ functions:
       - http: 
           path: /products
           method: post
+  catalogBatchProcess:
+    handler: ./functions/catalog/catalogBatchProcess/catalogBatchProcess.handler
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt:
+              - SQSQueue
+              - Arn
+    
+resources:
+  Resources:
+    RDSInstance:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        AvailabilityZone: eu-central-1a
+        DBName: productsDb
+        MasterUsername: ${env:PGUSER}
+        MasterUserPassword: ${env:PGPASSWORD}
+        Engine: postgres
+        EngineVersion: "14.2"
+        DBInstanceClass: db.t3.micro
+        AllocatedStorage: 20
+        StorageType: standard
+    SQSQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalog-node-queue-sheva
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: create-product-topic
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties: 
+        Endpoint: ad.mauntov@mail.ru
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+    SNSCustomSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: size.sheva@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+        FilterPolicy:
+          count:
+            - numeric:
+              - '>'
+              - 5

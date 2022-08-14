@@ -1,38 +1,54 @@
 import { getProductById } from "../../../functions/products/getProductById/getProductById";
+import { ProductsService } from "../../../services/products.service";
 
 describe("Products - getProductById", () => {
-  beforeEach(() => {
+  afterEach(() => {
     jest.restoreAllMocks();
   });
   it("should return status code 200", async () => {
+    jest.spyOn(ProductsService.prototype, "findProductById").mockReturnValue(
+      Promise.resolve({
+        id: "38c7def4-a741-4926-840f-c34252ff4e3c",
+        price: 22,
+        title: "mock",
+        product_id: "mock",
+        count: 2,
+      })
+    );
     const event = {
       pathParameters: {
-        productName: "Fanta",
+        productId: "38c7def4-a741-4926-840f-c34252ff4e3c",
       },
     } as any;
 
     const result = await getProductById(event);
+
     expect(result.statusCode).toEqual(200);
   });
 
-  it("should return status code 400", async () => {
+  it("should return status code 404", async () => {
+    jest.spyOn(ProductsService.prototype, "findProductById").mockReturnValue(
+      Promise.resolve(undefined)
+    );
     const event = {
       pathParameters: {
-        id: "mock",
+        productId: "38c7def4-a741-4926-840f-c34252ff4e3c",
       },
     } as any;
 
     const result = await getProductById(event);
-    expect(result.statusCode).toEqual(400);
+    expect(result.statusCode).toEqual(404);
   });
 
   it("should handle absense of product", async () => {
     const event = {
       pathParameters: {
-        id: "99",
+        productId: "38c7def4-a741-4926-840f-c34252ff4e3c",
       },
     } as any;
-
+    jest.spyOn(ProductsService.prototype, "findProductById").mockReturnValue(
+      Promise.resolve(undefined)
+    );
     const result = await getProductById(event);
     expect(result.body).toEqual(
       JSON.stringify("There is no product with such id")
@@ -42,11 +58,14 @@ describe("Products - getProductById", () => {
   it("should handle invalid argument type", async () => {
     const event = {
       pathParameters: {
-        id: "mock",
+        productId: "mock",
       },
     } as any;
 
     const result = await getProductById(event);
-    expect(result.body).toEqual(JSON.stringify("Invalid argument type"));
+
+    expect(result.body).toEqual(
+      "\"\\\"productId\\\" must be a valid GUID\""
+    );
   });
 });

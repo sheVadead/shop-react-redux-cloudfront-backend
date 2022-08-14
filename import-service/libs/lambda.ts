@@ -10,8 +10,12 @@ export const middyfy = (handler) => {
       inputOutputLogger({
         logger: (event) => {
           if (!event.response) {
-            const { eventSource, eventName } = event.event.Records[0];
-            console.log(`Event name: ${eventName}, event source: ${eventSource}`);
+            if (event.event?.Records) {
+              const { eventSource, eventName } = event.event.Records[0];
+              console.log(
+                `Event name: ${eventName}, event source: ${eventSource}`
+              );
+            }
           }
         },
       })
