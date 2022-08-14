@@ -63,7 +63,8 @@ resources:
     RDSInstance:
       Type: AWS::RDS::DBInstance
       Properties:
-        DBName: Products
+        AvailabilityZone: eu-central-1a
+        DBName: productsDb
         MasterUsername: ${env:PGUSER}
         MasterUserPassword: ${env:PGPASSWORD}
         Engine: postgres

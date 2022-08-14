@@ -9,7 +9,7 @@ export const getProductById = async (event) => {
   try {
     const validateParameters = schema.validate(event.pathParameters);
     productService = new ProductsService();
-
+ 
     if ("error" in validateParameters) {
       console.log(validateParameters.error);
       return formatJSONResponse({

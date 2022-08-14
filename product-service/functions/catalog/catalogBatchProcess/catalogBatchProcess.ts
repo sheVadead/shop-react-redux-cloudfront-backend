@@ -22,7 +22,7 @@ const sendSnsNotifications = async (records: SQSRecord[]) => {
     .promise();
 };
 
-const catalogBatchProcess = async (event: SQSEvent) => {
+export const catalogBatchProcess = async (event: SQSEvent) => {
   try {
     if (!event.Records || !event.Records.length) {
       return formatJSONResponse({ message: "Nothing", statusCode: 400 });
