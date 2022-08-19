@@ -33,10 +33,15 @@ provider:
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
       BUCKET_NAME: ${self:custom.client.bucketName}
+      MY_THING: !ImportValue  'authorization-service-dev-Arn'
+               
+
 
 
 
 custom:
+  authorizerArn:
+    Fn::ImportValue: 'authorization-service-dev-Arn'
   client:
     bucketName: product-aws-bucket-v2
   s3BucketName: ${self:custom.client.bucketName}
@@ -52,6 +57,12 @@ functions:
     events:
       - http: 
           path: /import
+          authorizer:
+            name: authorizer
+            arn: ${self:custom.authorizerArn}
+            type: token
+            identitySource: method.request.header.Authorization
+            resultTtlInSeconds: 0
           method: get
           request:
             parameters:
@@ -67,3 +78,15 @@ functions:
          rules:
             - prefix: uploaded/
             - suffix: .csv
+
+resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId: 
+          Ref: 'ApiGatewayRestApi'
